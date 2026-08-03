@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Roll Call — School Attendance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Space+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<div class="board-frame">
+  <header class="board-header">
+    <div class="chalk-title">
+      <span class="chalk-icon" aria-hidden="true">&#9634;</span>
+      <h1>Roll Call</h1>
+    </div>
+    <div id="user-badge" class="user-badge hidden">
+      <span id="user-name"></span>
+      <span id="user-role" class="role-tag"></span>
+      <button id="logout-btn" class="chalk-link">sign out</button>
+    </div>
+  </header>
+
+  <!-- LOGIN -->
+  <section id="login-screen" class="chalk-panel login-panel">
+    <p class="panel-eyebrow">welcome back</p>
+    <h2 class="chalk-heading">Sign in to the register</h2>
+    <form id="login-form" class="stack-form">
+      <label>
+        <span>Email</span>
+        <input type="email" id="login-email" placeholder="you@school.edu" required />
+      </label>
+      <label>
+        <span>Password</span>
+        <input type="password" id="login-password" placeholder="••••••••" required />
+      </label>
+      <button type="submit" class="chalk-button primary">Sign in</button>
+      <p id="login-error" class="error-line hidden"></p>
+    </form>
+    <p class="hint-line">First time here? Ask an admin to create your account, or run <code>node seedAdmin.js</code> on the server for the default admin.</p>
+  </section>
+
+  <!-- APP -->
+  <section id="app-screen" class="hidden">
+    <nav class="chalk-tabs" id="tabs">
+      <button class="tab-btn active" data-tab="attendance">Take attendance</button>
+      <button class="tab-btn" data-tab="classes">Classes</button>
+      <button class="tab-btn" data-tab="students">Students</button>
+      <button class="tab-btn" data-tab="reports">Reports</button>
+    </nav>
+
+    <!-- ATTENDANCE TAB -->
+    <div class="tab-panel active" id="tab-attendance">
+      <div class="chalk-panel">
+        <p class="panel-eyebrow">daily register</p>
+        <div class="control-row">
+          <label class="inline-label">
+            <span>Class</span>
+            <select id="att-class-select"></select>
+          </label>
+          <label class="inline-label">
+            <span>Date</span>
+            <input type="date" id="att-date" />
+          </label>
+          <button id="att-load-btn" class="chalk-button">Load roster</button>
+        </div>
+        <div id="att-roster" class="roster-list"></div>
+        <div class="control-row" id="att-submit-row" style="display:none;">
+          <button id="att-mark-all-present" class="chalk-link">mark everyone present</button>
+          <button id="att-submit-btn" class="chalk-button primary">Save attendance</button>
+        </div>
+        <p id="att-status" class="status-line"></p>
+      </div>
+    </div>
+
+    <!-- CLASSES TAB -->
+    <div class="tab-panel" id="tab-classes">
+      <div class="chalk-panel" id="admin-only-class-form">
+        <p class="panel-eyebrow">new entry</p>
+        <form id="class-form" class="row-form">
+          <input type="text" id="class-name" placeholder="Class name, e.g. Grade 8" required />
+          <input type="text" id="class-section" placeholder="Section, e.g. A" />
+          <button type="submit" class="chalk-button primary">Add class</button>
+        </form>
+      </div>
+      <div class="chalk-panel">
+        <p class="panel-eyebrow">roll of classes</p>
+        <div id="classes-list" class="ledger-list"></div>
+      </div>
+    </div>
+
+    <!-- STUDENTS TAB -->
+    <div class="tab-panel" id="tab-students">
+      <div class="chalk-panel" id="admin-only-student-form">
+        <p class="panel-eyebrow">new entry</p>
+        <form id="student-form" class="row-form">
+          <input type="text" id="student-name" placeholder="Student name" required />
+          <input type="text" id="student-roll" placeholder="Roll number" required />
+          <select id="student-class-select" required></select>
+          <input type="text" id="student-contact" placeholder="Guardian contact (optional)" />
+          <button type="submit" class="chalk-button primary">Add student</button>
+        </form>
+      </div>
+      <div class="chalk-panel">
+        <p class="panel-eyebrow">filter by class</p>
+        <select id="students-filter-select"></select>
+        <div id="students-list" class="ledger-list"></div>
+      </div>
+    </div>
+
+    <!-- REPORTS TAB -->
+    <div class="tab-panel" id="tab-reports">
+      <div class="chalk-panel">
+        <p class="panel-eyebrow">daily summary</p>
+        <div class="control-row">
+          <select id="report-class-select"></select>
+          <input type="date" id="report-date" />
+          <button id="daily-report-btn" class="chalk-button">Run report</button>
+        </div>
+        <div id="daily-report-out" class="report-out"></div>
+      </div>
+
+      <div class="chalk-panel">
+        <p class="panel-eyebrow">monthly summary</p>
+        <div class="control-row">
+          <select id="monthly-class-select"></select>
+          <input type="month" id="monthly-month" />
+          <button id="monthly-report-btn" class="chalk-button">Run report</button>
+        </div>
+        <div id="monthly-report-out" class="report-out"></div>
+      </div>
+
+      <div class="chalk-panel">
+        <p class="panel-eyebrow">export</p>
+        <div class="control-row">
+          <select id="export-class-select"></select>
+          <input type="date" id="export-start" />
+          <input type="date" id="export-end" />
+          <button id="export-btn" class="chalk-button">Download CSV</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
