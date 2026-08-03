@@ -99,7 +99,11 @@ school-attendance-app/
 ├── seedAdmin.js       bootstrap first admin
 └── .env.example
 ```
+<img width="1363" height="728" alt="image" src="https://github.com/user-attachments/assets/6d7ea361-a6e7-4812-b1a5-6489cde1fd24" />
 
+<img width="1365" height="682" alt="image" src="https://github.com/user-attachments/assets/cf4f125e-36bb-4242-8e19-1306a0d6bbb2" />
+
+<img width="1362" height="728" alt="image" src="https://github.com/user-attachments/assets/611b8423-771b-43db-8456-884f6e996c9c" />
 ## Notes
 
 - Attendance is unique per `(student, class, date)` — marking twice for the same day updates the existing record instead of duplicating it.
