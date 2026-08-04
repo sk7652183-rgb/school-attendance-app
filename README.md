@@ -21,6 +21,8 @@ Version 1 – Basic Dockerfile
 
 The initial implementation used a simple single-stage Docker build.
 
+```bash
+
 FROM node:22-alpine
 
 WORKDIR /app
@@ -34,7 +36,7 @@ COPY . .
 EXPOSE 3000
 
 CMD ["npm", "start"]
-
+```
 🔨 Build
 docker build -t school-attendance-app:v1 .
 
@@ -46,6 +48,9 @@ school-attendance-app:v1	300 MB
 To improve security and reduce image size, the Dockerfile was redesigned using a multi-stage build.
 
 # Stage 1 - Install production dependencies
+
+```bash
+
 FROM node:22-alpine AS deps
 
 WORKDIR /app
@@ -78,6 +83,8 @@ USER appuser
 EXPOSE 3000
 
 CMD ["node", "server.js"]
+
+```
 
 🔨 Build Command
 docker build --no-cache -t school-attendance-app .
