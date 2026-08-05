@@ -105,9 +105,9 @@ school-attendance-app/
 
 <img width="1362" height="728" alt="image" src="https://github.com/user-attachments/assets/611b8423-771b-43db-8456-884f6e996c9c" />
 
-## Demo
+## 🎥 Demo Video
 
-🎥 [Watch the Demo](./app.mp4)
+[▶️ Watch the Demo](./20260805-1003-43.1075155.mp4)
 
 ## Notes
 
