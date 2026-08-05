@@ -1,28 +1,54 @@
-🚀 School Attendance Application – DevOps
+# 🚀 School Attendance Application – DevOps
 
+<p align="center">
 
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-22-339933?style=for-the-badge&logo=node.js&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-7-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
+![Nginx](https://img.shields.io/badge/Nginx-Alpine-009639?style=for-the-badge&logo=nginx&logoColor=white)
 
+</p>
 
+---
 
+# 📚 Table of Contents
 
-📌 Overview
+- 📌 Overview
+- 🖥️ Backend Docker Image
+- 🚀 Optimized Multi-Stage Build
+- 🛡️ Docker Best Practices
+- 📁 .dockerignore
+- 🧪 Local Testing
+- 🌐 Frontend Docker Image
+- 🐳 Docker Images
+- 📦 Docker Compose
+- 🎥 Demo
+- ☁️ Docker Hub
+- 🎯 Final Result
 
-This project demonstrates the containerization of the School Attendance Application by creating separate Docker images for the backend and frontend.
+---
 
-The implementation follows Docker best practices:
+# 📌 Overview
 
-🏗️ Multi-stage builds
-👤 Non-root user execution
-📦 Lightweight Alpine base images
-⚡ Optimized image size
-🧹 Clean build context using .dockerignore
-🖥️ Backend Docker Image
-Version 1 – Basic Dockerfile
+This project demonstrates the containerization of the **School Attendance Application** using Docker.
 
-The initial implementation used a simple single-stage Docker build.
+✨ **Features**
 
-```bash
+- 🏗️ Multi-stage Docker builds
+- 👤 Non-root user execution
+- 📦 Lightweight Alpine images
+- ⚡ Optimized image size
+- 🔒 Production-ready configuration
+- 🧹 Clean build context using `.dockerignore`
 
+---
+
+# 🖥️ Backend Docker Image
+
+<details>
+<summary><b>📄 Version 1 – Basic Dockerfile</b></summary>
+
+```dockerfile
 FROM node:22-alpine
 
 WORKDIR /app
@@ -35,73 +61,73 @@ COPY . .
 
 EXPOSE 3000
 
-CMD ["npm", "start"]
+CMD ["npm","start"]
 ```
-🔨 Build
-docker build -t school-attendance-app:v1 .
 
-📊 Result
-Image	Size
-school-attendance-app:v1	300 MB
-🚀 Optimized Multi-Stage Docker Build
-
-To improve security and reduce image size, the Dockerfile was redesigned using a multi-stage build.
-
-# Stage 1 - Install production dependencies
+### Build
 
 ```bash
-
-# Stage 1 - Install production dependencies
-FROM node:22-alpine AS deps
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --omit=dev && npm cache clean --force
-
-# Stage 2 - Production image
-FROM node:22-alpine AS runner
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-COPY server.js seedAdmin.js createUser.js ./
-COPY config ./config
-COPY controllers ./controllers
-COPY middleware ./middleware
-COPY models ./models
-COPY routes ./routes
-COPY frontend ./frontend
-
-# Create non-root user
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup \
-    && chown -R appuser:appgroup /app
-USER appuser
-
-EXPOSE 3000
-CMD ["node", "server.js"]
-
-
+docker build -t school-attendance-app:v1 .
 ```
 
-🔨 Build Command
+| Image | Size |
+|-------|------|
+| school-attendance-app:v1 | 300 MB |
+
+</details>
+
+---
+
+# 🚀 Optimized Multi-Stage Docker Build
+
+<details>
+<summary><b>📄 View Optimized Dockerfile</b></summary>
+
+```dockerfile
+# Stage 1 - Install production dependencies
+
+FROM node:22-alpine AS deps
+...
+
+FROM node:22-alpine AS runner
+...
+```
+
+</details>
+
+### Build
+
+```bash
 docker build --no-cache -t school-attendance-app .
+```
 
-📈 Image Size Comparison
-Docker Image	Size
-Initial Image	300 MB
-Optimized Image	280 MB
+## 📊 Image Comparison
 
-✅ Reduced image size by approximately 20 MB while improving security and maintainability.
+| Version | Size |
+|---------|------|
+| Initial | 300 MB |
+| Optimized | 280 MB |
 
-🛡️ Docker Best Practices
-Practice	Status
-Multi-stage build	✅
-Alpine base image	✅
-Production dependencies only	✅
-Non-root user	✅
-Smaller image size	✅
-Optimized Docker layers	✅
-📁 .dockerignore
+> ✅ Reduced image size by **20 MB**
 
-To reduce the Docker build context, unnecessary files were excluded.
+---
 
+# 🛡️ Docker Best Practices
+
+| Practice | Status |
+|----------|:------:|
+| Multi-stage Build | ✅ |
+| Alpine Image | ✅ |
+| Production Dependencies | ✅ |
+| Non-root User | ✅ |
+| Smaller Image | ✅ |
+| Optimized Layers | ✅ |
+
+---
+
+# 📁 .dockerignore
+
+```gitignore
 node_modules
 .git
 .gitignore
@@ -110,81 +136,128 @@ README.md
 .env
 npm-debug.log
 *.log
+```
 
-🎯 Benefits
-⚡ Faster builds
-📦 Smaller build context
-🔒 Prevents accidental inclusion of sensitive files
-🚀 Better Docker layer caching
-🧪 Local Testing
+### Benefits
 
-The optimized Docker image was successfully built and tested locally.
+- ⚡ Faster builds
+- 📦 Smaller build context
+- 🔒 Keeps secrets out of images
+- 🚀 Better Docker cache
 
+---
+
+# 🧪 Local Testing
+
+```bash
 docker build --no-cache -t school-attendance-app .
 
 docker run -p 3000:3000 school-attendance-app
+```
 
+✅ Application started successfully inside the container.
 
-✔️ Application started successfully inside the container.
+---
 
-🌐 Frontend Docker Image
+# 🌐 Frontend Docker Image
 
-The frontend is served using Nginx Alpine.
-
-```bash
-
+```dockerfile
 FROM nginx:1.25-alpine
 
 COPY . /usr/share/nginx/html
 
 EXPOSE 80
 
-CMD ["nginx", "-g", "daemon off;"]
-
+CMD ["nginx","-g","daemon off;"]
 ```
 
-🔨 Build
+### Build
+
+```bash
 cd frontend
 
 docker build -t school-attendance-app-fe .
+```
 
-📊 Frontend Image
-Image	Base Image	Size
-school-attendance-app-fe	nginx:1.25-alpine	74 MB
-🐳 Docker Images
-Image	Purpose
-school-attendance-app:latest	Backend (Optimized)
-school-attendance-app:v1	Backend (Initial Version)
-school-attendance-app-fe:latest	Frontend
-📦 Project Structure
-school-attendance-app
-├── config/
-├── controllers/
-├── middleware/
-├── models/
-├── routes/
-├── frontend/
-├── Dockerfile
-├── .dockerignore
-├── package.json
-└── server.js
+| Image | Base Image | Size |
+|-------|------------|------|
+| school-attendance-app-fe | nginx:1.25-alpine | 74 MB |
 
-🎯 Outcome
+---
 
-✅ Backend successfully containerized
+# 🐳 Docker Images
 
-✅ Frontend successfully containerized
+| Image | Purpose |
+|-------|---------|
+| school-attendance-app | Backend |
+| school-attendance-app:v1 | Initial Backend |
+| school-attendance-app-fe | Frontend |
 
-✅ Multi-stage Docker build implemented
+---
 
-✅ Non-root user configured
+# 📦 Docker Compose
 
-✅ Docker image optimized
+✅ Configured Docker Compose with:
 
-✅ Build context reduced with .dockerignore
+- 🖥️ Frontend Service
+- ⚙️ Backend Service
+- 🍃 MongoDB
+- 💾 Persistent Volume
+- 🌐 Custom Network
+- 🔐 Environment Variables
+- ❤️ Health Checks
 
-✅ Images tested successfully on local Docker environment
+---
 
-🎉 Final Result
+# 🎥 Demo Video
 
-The School Attendance Application is now fully Dockerized with separate backend and frontend images, following modern containerization best practices for efficient deployment, improved security, and reduced image size.
+Click below to watch the demo.
+
+[![Watch Demo](https://img.shields.io/badge/▶-Watch%20Demo-red?style=for-the-badge)](https://github.com/user-attachments/assets/3e452e8a-b382-418f-a02b-8e36024da481)
+
+---
+
+# ☁️ Docker Hub
+
+[![Docker Hub](https://img.shields.io/badge/Open-Docker%20Hub-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://hub.docker.com/repositories/sufiyn)
+
+### 📦 Images
+
+| Image | Link |
+|------|------|
+| 🖥️ Backend | https://hub.docker.com/r/sufiyn/school-attendance-app-backend |
+| 🌐 Frontend | https://hub.docker.com/r/sufiyn/school-attendance-app-frontend |
+
+### Pull Images
+
+```bash
+docker pull sufiyn/school-attendance-app-backend:latest
+
+docker pull sufiyn/school-attendance-app-frontend:latest
+```
+
+---
+
+# 🎯 Final Result
+
+> ✅ Backend containerized
+
+> ✅ Frontend containerized
+
+> ✅ Multi-stage Docker build implemented
+
+> ✅ Non-root user configured
+
+> ✅ Docker image optimized
+
+> ✅ Build context reduced
+
+> ✅ Docker Compose configured
+
+> ✅ Images published to Docker Hub
+
+> ✅ Successfully tested
+
+---
+
+## ⭐ If you found this project useful, consider giving it a Star!
