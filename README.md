@@ -104,6 +104,11 @@ school-attendance-app/
 <img width="1365" height="682" alt="image" src="https://github.com/user-attachments/assets/cf4f125e-36bb-4242-8e19-1306a0d6bbb2" />
 
 <img width="1362" height="728" alt="image" src="https://github.com/user-attachments/assets/611b8423-771b-43db-8456-884f6e996c9c" />
+
+## Demo
+
+🎥 [Watch the Demo](./app.mp4)
+
 ## Notes
 
 - Attendance is unique per `(student, class, date)` — marking twice for the same day updates the existing record instead of duplicating it.
