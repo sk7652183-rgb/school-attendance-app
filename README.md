@@ -1,124 +1,396 @@
-# School Attendance API
+# 📚 School Attendance API
 
-A Node.js + Express + MongoDB backend for tracking school attendance, with JWT auth, role-based access (admin/teacher), daily/monthly reports, and CSV export.
+<p align="center">
+  <img src="https://img.shields.io/badge/Node.js-20.x-green?style=for-the-badge&logo=node.js" />
+  <img src="https://img.shields.io/badge/Express.js-Backend-black?style=for-the-badge&logo=express" />
+  <img src="https://img.shields.io/badge/MongoDB-Database-green?style=for-the-badge&logo=mongodb" />
+  <img src="https://img.shields.io/badge/JWT-Authentication-blue?style=for-the-badge&logo=jsonwebtokens" />
+  <img src="https://img.shields.io/badge/License-MIT-orange?style=for-the-badge" />
+</p>
 
-## Setup
+<p align="center">
+A secure <b>Node.js + Express + MongoDB</b> REST API for managing school attendance with JWT authentication, role-based authorization, attendance reports, and CSV export.
+</p>
+
+---
+
+# ✨ Features
+
+- 🔐 JWT Authentication
+- 👥 Role-Based Access Control (Admin & Teacher)
+- 🏫 Class Management
+- 🎓 Student Management
+- ✅ Daily Attendance Tracking
+- 📅 Monthly Attendance Reports
+- 📊 Daily Attendance Summary
+- 📄 CSV Report Export
+- 🔒 Password Hashing using bcrypt
+- ⚡ RESTful API Design
+- 🗄 MongoDB + Mongoose
+
+---
+
+# 📑 Table of Contents
+
+- [Tech Stack](#-tech-stack)
+- [Installation](#-installation)
+- [Environment Variables](#-environment-variables)
+- [Running the Project](#-running-the-project)
+- [Authentication](#-authentication)
+- [User Roles](#-user-roles)
+- [API Endpoints](#-api-endpoints)
+- [Attendance Example](#-attendance-example)
+- [Project Structure](#-project-structure)
+- [Screenshots](#-screenshots)
+- [Demo Video](#-demo-video)
+- [Notes](#-notes)
+
+---
+
+# 🚀 Tech Stack
+
+| Technology | Purpose |
+|------------|---------|
+| Node.js | Runtime |
+| Express.js | Backend Framework |
+| MongoDB | Database |
+| Mongoose | ODM |
+| JWT | Authentication |
+| bcrypt | Password Encryption |
+| json2csv | CSV Export |
+
+---
+
+# ⚙ Installation
+
+Clone the repository
+
+```bash
+git clone https://github.com/yourusername/school-attendance-app.git
+
+cd school-attendance-app
+```
+
+Install dependencies
 
 ```bash
 npm install
-cp .env.example .env
-# edit .env with your MongoDB URI and JWT secret
-
-# create the first admin account
-node seedAdmin.js
-
-# start the server
-npm run dev    # with nodemon
-npm start      # plain node
 ```
 
-Default seeded admin: `admin@school.com` / `ChangeMe123!` — change this immediately after first login.
+Copy environment variables
 
-## Roles
+```bash
+cp .env.example .env
+```
 
-- **admin** — full access: manage classes, students, users, attendance, reports
-- **teacher** — can view classes/students, mark and update attendance, view reports (cannot create classes/students/users or delete attendance)
+Edit your `.env`
 
-## Auth
+```env
+PORT=5000
 
-All routes except `/api/auth/login` require a `Authorization: Bearer <token>` header.
+MONGO_URI=your_mongodb_connection
 
-| Method | Route | Access | Description |
-|---|---|---|---|
-| POST | `/api/auth/register` | admin | Create a new user (admin or teacher) |
-| POST | `/api/auth/login` | public | Log in, returns JWT |
-| GET | `/api/auth/me` | any logged-in user | Get current user profile |
+JWT_SECRET=your_super_secret_key
+```
+
+---
+
+# ▶ Running the Project
+
+### Seed the Admin User
+
+```bash
+node seedAdmin.js
+```
+
+Default Login
+
+```
+Email:
+admin@school.com
+
+Password:
+ChangeMe123!
+```
+
+> ⚠ Change the password immediately after first login.
+
+Start Development Server
+
+```bash
+npm run dev
+```
+
+Production
+
+```bash
+npm start
+```
+
+---
+
+# 🔐 Authentication
+
+All endpoints require JWT except:
+
+```
+POST /api/auth/login
+```
+
+Include the token:
+
+```http
+Authorization: Bearer YOUR_JWT_TOKEN
+```
+
+---
+
+# 👥 User Roles
+
+## 👑 Admin
+
+✔ Manage Users
+
+✔ Manage Classes
+
+✔ Manage Students
+
+✔ Attendance CRUD
+
+✔ Reports
+
+✔ CSV Export
+
+---
+
+## 👨‍🏫 Teacher
+
+✔ View Classes
+
+✔ View Students
+
+✔ Mark Attendance
+
+✔ Update Attendance
+
+✔ View Reports
+
+❌ Cannot Create/Delete Users
+
+❌ Cannot Create/Delete Classes
+
+❌ Cannot Delete Attendance
+
+---
+
+# 📡 API Endpoints
+
+## Authentication
+
+| Method | Endpoint | Access |
+|---------|----------|--------|
+| POST | `/api/auth/register` | Admin |
+| POST | `/api/auth/login` | Public |
+| GET | `/api/auth/me` | Authenticated |
+
+---
 
 ## Classes
 
-| Method | Route | Access |
-|---|---|---|
-| GET | `/api/classes` | any |
-| GET | `/api/classes/:id` | any |
-| POST | `/api/classes` | admin |
-| PUT | `/api/classes/:id` | admin |
-| DELETE | `/api/classes/:id` | admin |
+| Method | Endpoint | Access |
+|---------|----------|--------|
+| GET | `/api/classes` | All |
+| GET | `/api/classes/:id` | All |
+| POST | `/api/classes` | Admin |
+| PUT | `/api/classes/:id` | Admin |
+| DELETE | `/api/classes/:id` | Admin |
+
+---
 
 ## Students
 
-| Method | Route | Access |
-|---|---|---|
-| GET | `/api/students?classId=` | any |
-| GET | `/api/students/:id` | any |
-| POST | `/api/students` | admin |
-| PUT | `/api/students/:id` | admin |
-| DELETE | `/api/students/:id` | admin |
+| Method | Endpoint | Access |
+|---------|----------|--------|
+| GET | `/api/students` | All |
+| GET | `/api/students/:id` | All |
+| POST | `/api/students` | Admin |
+| PUT | `/api/students/:id` | Admin |
+| DELETE | `/api/students/:id` | Admin |
+
+---
 
 ## Attendance
 
-| Method | Route | Access |
-|---|---|---|
-| POST | `/api/attendance` | admin, teacher |
-| GET | `/api/attendance?classId=&date=&studentId=` | any |
-| PUT | `/api/attendance/:id` | admin, teacher |
-| DELETE | `/api/attendance/:id` | admin |
+| Method | Endpoint | Access |
+|---------|----------|--------|
+| POST | `/api/attendance` | Admin, Teacher |
+| GET | `/api/attendance` | All |
+| PUT | `/api/attendance/:id` | Admin, Teacher |
+| DELETE | `/api/attendance/:id` | Admin |
 
-**Mark attendance for a class** (bulk, one call per class per day):
+---
+
+## Reports
+
+| Method | Endpoint | Description |
+|---------|----------|-------------|
+| GET | `/api/reports/daily` | Daily Summary |
+| GET | `/api/reports/monthly` | Monthly Report |
+| GET | `/api/reports/export` | Export CSV |
+
+---
+
+# ✅ Attendance Example
+
+```http
+POST /api/attendance
+```
 
 ```json
-POST /api/attendance
 {
   "classId": "664f...",
   "date": "2026-08-02",
   "records": [
-    { "studentId": "664a...", "status": "present" },
-    { "studentId": "664b...", "status": "absent" },
-    { "studentId": "664c...", "status": "late" }
+    {
+      "studentId": "664a...",
+      "status": "present"
+    },
+    {
+      "studentId": "664b...",
+      "status": "absent"
+    },
+    {
+      "studentId": "664c...",
+      "status": "late"
+    }
   ]
 }
 ```
 
-## Reports
+---
 
-| Method | Route | Access | Description |
-|---|---|---|---|
-| GET | `/api/reports/daily?classId=&date=` | any | Present/absent/late counts for one day |
-| GET | `/api/reports/monthly?classId=&year=&month=` | any | Per-student totals for the month |
-| GET | `/api/reports/export?classId=&startDate=&endDate=` | any | Downloads a CSV of attendance for the date range |
-
-## Project structure
+# 📁 Project Structure
 
 ```
-school-attendance-app/
-├── config/db.js
-├── models/          User, Class, Student, Attendance
-├── middleware/       auth.js (JWT), role.js (RBAC)
-├── controllers/       auth, class, student, attendance, report
+school-attendance-app
+│
+├── config/
+│   └── db.js
+│
+├── controllers/
+│   ├── authController.js
+│   ├── classController.js
+│   ├── studentController.js
+│   ├── attendanceController.js
+│   └── reportController.js
+│
+├── middleware/
+│   ├── auth.js
+│   └── role.js
+│
+├── models/
+│   ├── User.js
+│   ├── Class.js
+│   ├── Student.js
+│   └── Attendance.js
+│
 ├── routes/
+│
 ├── server.js
-├── seedAdmin.js       bootstrap first admin
-└── .env.example
+├── seedAdmin.js
+├── .env.example
+└── package.json
 ```
-<img width="1363" height="728" alt="image" src="https://github.com/user-attachments/assets/6d7ea361-a6e7-4812-b1a5-6489cde1fd24" />
 
-<img width="1365" height="682" alt="image" src="https://github.com/user-attachments/assets/cf4f125e-36bb-4242-8e19-1306a0d6bbb2" />
+---
 
-<img width="1362" height="728" alt="image" src="https://github.com/user-attachments/assets/611b8423-771b-43db-8456-884f6e996c9c" />
+# 📸 Screenshots
 
+## 🔑 Login
 
+<p align="center">
+<img src="https://github.com/user-attachments/assets/6d7ea361-a6e7-4812-b1a5-6489cde1fd24" width="900"/>
+</p>
 
-https://github.com/user-attachments/assets/3e452e8a-b382-418f-a02b-8e36024da481
+---
 
+## 📋 Attendance Dashboard
 
+<p align="center">
+<img src="https://github.com/user-attachments/assets/cf4f125e-36bb-4242-8e19-1306a0d6bbb2" width="900"/>
+</p>
 
+---
 
+## 📊 Reports
 
+<p align="center">
+<img src="https://github.com/user-attachments/assets/611b8423-771b-43db-8456-884f6e996c9c" width="900"/>
+</p>
 
+---
 
+# 🎥 Demo Video
 
+Click the image below to watch the demo.
 
-## Notes
+[![Watch Demo](https://img.shields.io/badge/▶-Watch%20Demo-red?style=for-the-badge)](https://github.com/user-attachments/assets/3e452e8a-b382-418f-a02b-8e36024da481)
 
-- Attendance is unique per `(student, class, date)` — marking twice for the same day updates the existing record instead of duplicating it.
-- Passwords are hashed with bcrypt; never stored in plain text.
-- Swap the in-memory JWT secret in `.env` for a strong random value before deploying.
+---
+
+# 🔒 Security
+
+- Passwords are hashed using **bcrypt**
+- JWT Authentication
+- Role-Based Authorization
+- Protected Routes
+- Environment Variables for Secrets
+
+---
+
+# 📝 Notes
+
+- Attendance is unique per **Student + Class + Date**
+- Duplicate attendance automatically updates the existing record.
+- Always store a strong JWT secret in production.
+- Never commit your `.env` file.
+
+---
+
+# 🤝 Contributing
+
+Contributions are welcome!
+
+1. Fork the repository
+
+2. Create your feature branch
+
+```bash
+git checkout -b feature/new-feature
+```
+
+3. Commit changes
+
+```bash
+git commit -m "Added new feature"
+```
+
+4. Push
+
+```bash
+git push origin feature/new-feature
+```
+
+5. Open a Pull Request
+
+---
+
+# ⭐ Support
+
+If you found this project helpful, consider giving it a ⭐ on GitHub.
+
+---
+
+<p align="center">
+Made with ❤️ using Node.js, Express & MongoDB
+</p>
