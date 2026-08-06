@@ -1,7 +1,8 @@
 version: "3.8"
+
 services:
   frontend:
-    build: ./frontend
+    image: sufiyn/school-attendance-app-frontend
     container_name: school-attendance-frontend
     ports:
       - "80:80"
@@ -10,8 +11,7 @@ services:
     restart: unless-stopped
 
   backend:
-    build:
-      context: .
+    image: sufiyn/school-attendance-app-backend
     container_name: school-attendance-backend
     ports:
       - "5000:5000"
@@ -24,7 +24,7 @@ services:
 
   mongo:
     image: mongo:7
-    container_name: attendance-mangodb
+    container_name: attendance-mongodb
     ports:
       - "27017:27017"
     volumes:
