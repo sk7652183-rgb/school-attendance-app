@@ -2,8 +2,7 @@ version: "3.8"
 
 services:
   frontend:
-    build:
-      context: ./frontend
+    image: sufiyn/school-attendance-app-frontend:latest
     container_name: school-attendance-frontend
     ports:
       - "80:80"
@@ -12,9 +11,7 @@ services:
     restart: unless-stopped
 
   backend:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: sufiyn/school-attendance-app-backend:latest
     container_name: school-attendance-backend
     ports:
       - "5000:5000"
