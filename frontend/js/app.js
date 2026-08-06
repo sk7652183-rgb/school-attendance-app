@@ -1,4 +1,4 @@
-const API_BASE = "http://44.255.3.2:5000/api";
+const API_BASE = "/api";
 
 
 
