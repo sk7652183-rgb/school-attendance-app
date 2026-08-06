@@ -13,40 +13,63 @@
 
 # 📚 Table of Contents
 
-- 📌 Overview
-- 🖥️ Backend Docker Image
-- 🚀 Optimized Multi-Stage Build
-- 🛡️ Docker Best Practices
-- 📁 .dockerignore
-- 🧪 Local Testing
-- 🌐 Frontend Docker Image
-- 🐳 Docker Images
-- 📦 Docker Compose
-- 🎥 Demo
-- ☁️ Docker Hub
-- 🎯 Final Result
+- Overview
+- Architecture
+- Backend Docker Image
+- Optimized Multi-Stage Build
+- Docker Best Practices
+- .dockerignore
+- Frontend Docker Image
+- Docker Compose
+- Running the Project
+- Default Credentials
+- Create Additional Users
+- Verify Users in MongoDB
+- Docker Images
+- Docker Hub
+- Demo
+- Final Result
 
 ---
 
 # 📌 Overview
 
-This project demonstrates the containerization of the **School Attendance Application** using Docker.
+This project demonstrates containerizing a **Full Stack School Attendance Application** using Docker.
 
-✨ **Features**
+The application consists of:
 
-- 🏗️ Multi-stage Docker builds
-- 👤 Non-root user execution
-- 📦 Lightweight Alpine images
-- ⚡ Optimized image size
-- 🔒 Production-ready configuration
-- 🧹 Clean build context using `.dockerignore`
+- 🌐 HTML/CSS/JavaScript Frontend
+- ⚙️ Node.js + Express REST API
+- 🍃 MongoDB Database
+- 🌍 Nginx Reverse Proxy
+- 🐳 Docker & Docker Compose
+
+---
+
+# 🏗️ Architecture
+
+```
+                    Browser
+                        │
+                        ▼
+                Nginx (Frontend)
+                        │
+         ┌──────────────┴──────────────┐
+         ▼                             ▼
+ Static HTML/CSS/JS             /api Requests
+                                        │
+                                        ▼
+                            Node.js + Express API
+                                        │
+                                        ▼
+                                   MongoDB
+```
 
 ---
 
 # 🖥️ Backend Docker Image
 
-<details>
-<summary><b>📄 Version 1 – Basic Dockerfile</b></summary>
+## Basic Dockerfile
 
 ```dockerfile
 FROM node:22-alpine
@@ -59,56 +82,70 @@ RUN npm install
 
 COPY . .
 
-EXPOSE 3000
+EXPOSE 5000
 
 CMD ["npm","start"]
 ```
 
-### Build
+Build
 
 ```bash
 docker build -t school-attendance-app:v1 .
 ```
 
-| Image | Size |
-|-------|------|
-| school-attendance-app:v1 | 300 MB |
+Image Size
 
-</details>
+| Version | Size |
+|----------|------|
+| Initial | 300 MB |
 
 ---
 
 # 🚀 Optimized Multi-Stage Docker Build
 
-<details>
-<summary><b>📄 View Optimized Dockerfile</b></summary>
-
 ```dockerfile
-# Stage 1 - Install production dependencies
-
+# Stage 1
 FROM node:22-alpine AS deps
-...
 
-FROM node:22-alpine AS runner
-...
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm ci --omit=dev
+
+# Stage 2
+
+FROM node:22-alpine
+
+WORKDIR /app
+
+COPY --from=deps /app/node_modules ./node_modules
+
+COPY . .
+
+USER node
+
+EXPOSE 5000
+
+CMD ["node","server.js"]
 ```
 
-</details>
-
-### Build
+Build
 
 ```bash
 docker build --no-cache -t school-attendance-app .
 ```
 
+---
+
 ## 📊 Image Comparison
 
 | Version | Size |
-|---------|------|
+|----------|------|
 | Initial | 300 MB |
 | Optimized | 280 MB |
 
-> ✅ Reduced image size by **20 MB**
+✅ Reduced image size by **20 MB**
 
 ---
 
@@ -117,11 +154,12 @@ docker build --no-cache -t school-attendance-app .
 | Practice | Status |
 |----------|:------:|
 | Multi-stage Build | ✅ |
-| Alpine Image | ✅ |
-| Production Dependencies | ✅ |
 | Non-root User | ✅ |
-| Smaller Image | ✅ |
+| Alpine Image | ✅ |
+| Docker Cache | ✅ |
 | Optimized Layers | ✅ |
+| Smaller Image | ✅ |
+| Production Dependencies | ✅ |
 
 ---
 
@@ -131,31 +169,18 @@ docker build --no-cache -t school-attendance-app .
 node_modules
 .git
 .gitignore
-Dockerfile
 README.md
 .env
 npm-debug.log
 *.log
 ```
 
-### Benefits
+Benefits
 
-- ⚡ Faster builds
-- 📦 Smaller build context
-- 🔒 Keeps secrets out of images
-- 🚀 Better Docker cache
-
----
-
-# 🧪 Local Testing
-
-```bash
-docker build --no-cache -t school-attendance-app .
-
-docker run -p 3000:3000 school-attendance-app
-```
-
-✅ Application started successfully inside the container.
+- Faster Docker Builds
+- Smaller Build Context
+- Better Cache Usage
+- Keeps Secrets Out of Images
 
 ---
 
@@ -166,69 +191,164 @@ FROM nginx:1.25-alpine
 
 COPY . /usr/share/nginx/html
 
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
 EXPOSE 80
 
 CMD ["nginx","-g","daemon off;"]
 ```
 
-### Build
+Build
 
 ```bash
 cd frontend
 
-docker build -t school-attendance-app-fe .
+docker build -t school-attendance-app-frontend .
 ```
 
-| Image | Base Image | Size |
-|-------|------------|------|
-| school-attendance-app-fe | nginx:1.25-alpine | 74 MB |
+---
+
+# 📦 Docker Compose
+
+Services
+
+- Frontend
+- Backend
+- MongoDB
+- Persistent Volume
+- Docker Network
+
+Start
+
+```bash
+docker compose up -d --build
+```
+
+Stop
+
+```bash
+docker compose down
+```
+
+View Logs
+
+```bash
+docker compose logs -f
+```
+
+---
+
+# ▶ Running the Project
+
+Application
+
+```
+http://<EC2-PUBLIC-IP>
+```
+
+Backend API
+
+```
+http://<EC2-PUBLIC-IP>/api
+```
+
+---
+
+# 🔑 Default Credentials
+
+The backend automatically creates an Admin user.
+
+| Role | Email | Password |
+|------|-------|----------|
+| Admin | admin@school.com | ChangeMe123! |
+
+---
+
+# 👥 Create Additional Users
+
+Create Teacher One
+
+```bash
+docker exec -it school-attendance-backend node createUser.js "Teacher One" teacher1@school.com Password123!
+```
+
+Create Teacher Two
+
+```bash
+docker exec -it school-attendance-backend node createUser.js "Teacher Two" teacher2@school.com Password123!
+```
+
+General Command
+
+```bash
+docker exec -it school-attendance-backend node createUser.js "<Name>" <Email> <Password>
+```
+
+---
+
+# 🔍 Verify Users in MongoDB
+
+Connect
+
+```bash
+docker exec -it attendance-mongodb mongosh
+```
+
+Use Database
+
+```javascript
+use school_attendance
+```
+
+View Users
+
+```javascript
+db.users.find({},{
+password:0
+}).pretty()
+```
+
+View Students
+
+```javascript
+db.students.find().pretty()
+```
+
+View Classes
+
+```javascript
+db.classes.find().pretty()
+```
+
+View Attendance
+
+```javascript
+db.attendances.find().pretty()
+```
 
 ---
 
 # 🐳 Docker Images
 
 | Image | Purpose |
-|-------|---------|
+|------|----------|
 | school-attendance-app | Backend |
 | school-attendance-app:v1 | Initial Backend |
-| school-attendance-app-fe | Frontend |
+| school-attendance-app-frontend | Frontend |
 
 ---
 
-# 📦 Docker Compose
+# ☁ Docker Hub
 
-✅ Configured Docker Compose with:
+Backend
 
-- 🖥️ Frontend Service
-- ⚙️ Backend Service
-- 🍃 MongoDB
-- 💾 Persistent Volume
-- 🌐 Custom Network
-- 🔐 Environment Variables
-- ❤️ Health Checks
+https://hub.docker.com/r/sufiyn/school-attendance-app-backend
 
----
+Frontend
 
-# 🎥 Demo Video
+https://hub.docker.com/r/sufiyn/school-attendance-app-frontend
 
-Click below to watch the demo.
-
-[![Watch Demo](https://img.shields.io/badge/▶-Watch%20Demo-red?style=for-the-badge)](https://github.com/user-attachments/assets/3e452e8a-b382-418f-a02b-8e36024da481)
-
----
-
-# ☁️ Docker Hub
-
-[![Docker Hub](https://img.shields.io/badge/Open-Docker%20Hub-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://hub.docker.com/repositories/sufiyn)
-
-### 📦 Images
-
-| Image | Link |
-|------|------|
-| 🖥️ Backend | https://hub.docker.com/r/sufiyn/school-attendance-app-backend |
-| 🌐 Frontend | https://hub.docker.com/r/sufiyn/school-attendance-app-frontend |
-
-### Pull Images
+Pull Images
 
 ```bash
 docker pull sufiyn/school-attendance-app-backend:latest
@@ -238,26 +358,42 @@ docker pull sufiyn/school-attendance-app-frontend:latest
 
 ---
 
-# 🎯 Final Result
+# 🎥 Demo
 
-> ✅ Backend containerized
+🎬 Watch the project demo below.
 
-> ✅ Frontend containerized
-
-> ✅ Multi-stage Docker build implemented
-
-> ✅ Non-root user configured
-
-> ✅ Docker image optimized
-
-> ✅ Build context reduced
-
-> ✅ Docker Compose configured
-
-> ✅ Images published to Docker Hub
-
-> ✅ Successfully tested
+https://github.com/user-attachments/assets/3e452e8a-b382-418f-a02b-8e36024da481
 
 ---
 
-## ⭐ If you found this project useful, consider giving it a Star!
+# 🎯 Final Result
+
+✅ Backend Containerized
+
+✅ Frontend Containerized
+
+✅ MongoDB Containerized
+
+✅ Docker Compose Configured
+
+✅ Multi-stage Docker Build
+
+✅ Optimized Image Size
+
+✅ Non-root User
+
+✅ Nginx Reverse Proxy
+
+✅ Persistent MongoDB Volume
+
+✅ Docker Hub Images Published
+
+✅ Production Ready Deployment
+
+---
+
+## ⭐ Support
+
+If you found this project useful, please consider giving it a **⭐ Star** on GitHub.
+
+Happy Learning! 🚀
