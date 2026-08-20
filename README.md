@@ -238,20 +238,37 @@ docker compose down
 
 ```yaml
 version: "3.8"
+
 services:
-  api:
-    build: .
+  frontend:
+    image: sufiyn/school-attendance-app-frontend:latest
+    container_name: school-attendance-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  backend:
+    image: sufiyn/school-attendance-app-backend:latest
+    container_name: school-attendance-backend
     ports:
       - "5000:5000"
-    env_file: .env
+    env_file:
+      - .env
+    command: sh -c "node seedAdmin.js && node server.js"
     depends_on:
       - mongo
+    restart: unless-stopped
+
   mongo:
     image: mongo:7
+    container_name: attendance-mongodb
     ports:
       - "27017:27017"
     volumes:
       - mongo-data:/data/db
+    restart: unless-stopped
 
 volumes:
   mongo-data:
