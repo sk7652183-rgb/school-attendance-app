@@ -73,21 +73,6 @@ A secure <b>Node.js + Express + MongoDB</b> REST API for managing school attenda
 | GitHub Actions | CI/CD |
 | PM2 (optional) | Process Management |
 
----
-
-## 🛠 DevOps Additions in This Branch
-
-This branch makes the API deployable in a repeatable, automated way. It layers the following on top of the application code:
-
-| Area | What's Added |
-|------|--------------|
-| Containerization | `Dockerfile` + `docker-compose.yml` for app + MongoDB |
-| CI | Lint, test, and build checks on every push/PR via GitHub Actions |
-| CD | Automated build & push of Docker image to a registry on merge to `main` |
-| Config | `.env.example` per environment (dev / staging / prod) |
-| Health Checks | `/api/health` endpoint for uptime and readiness probes |
-| Logging | Structured request logging (e.g., via `morgan`/`winston`) |
-| Process Management | PM2 config for production process supervision |
 
 > ⚠️ If any of the above files (`Dockerfile`, `docker-compose.yml`, `.github/workflows/*`) don't exist yet in this branch, add them alongside this README so the sections below match the actual repo contents.
 
