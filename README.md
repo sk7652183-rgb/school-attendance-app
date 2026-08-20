@@ -133,8 +133,8 @@ cp .env.example .env
 PORT=5000
 MONGO_URI=your_mongodb_connection
 JWT_SECRET=your_super_secret_key
-NODE_ENV=development
-FRONTEND_URL=http://localhost:5173
+NODE_ENV=production
+FRONTEND_URL=http://YOUR_EC2_PUBLIC_IP
 ```
 
 > Need a MongoDB connection string quickly? Create a free cluster at [MongoDB Atlas](https://www.mongodb.com/atlas) and copy the connection URI it gives you, or point `MONGO_URI` at a local instance (`mongodb://localhost:27017/school-attendance`).
