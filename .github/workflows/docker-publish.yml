@@ -3,7 +3,7 @@ name: Build and Push Docker Images
 on:
   push:
     branches:
-      - master
+      - DevOps
 
 jobs:
   Build-Image:
@@ -44,7 +44,7 @@ jobs:
         uses: docker/build-push-action@v7
         with:
           context: ${{ matrix.services == 'frontend' && './frontend' || '.' }}
-          push: true
+          push: ${{ github.ref == 'refs/heads/DevOps' && github.event_name == 'push' }}
           tags: |
                 ${{ vars.DOCKERHUB_USERNAME }}/school-attendance-app-${{ matrix.services }}:latest
                 ${{ vars.DOCKERHUB_USERNAME }}/school-attendance-app-${{ matrix.services }}:sha-${{ steps.short_sha.outputs.sha }}
