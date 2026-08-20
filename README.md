@@ -484,6 +484,10 @@ school-attendance-app
 
 ---
 
+# 📚 School Attendance API
+
+[![Build and Push Docker Images](https://github.com/sk7652183-rgb/school-attendance-app/actions/workflows/docker-publish.yml/badge.svg?branch=DevOps)](https://github.com/sk7652183-rgb/school-attendance-app/actions/workflows/docker-publish.yml)
+
 ## 🤝 Contributing
 
 1. Fork the repository
