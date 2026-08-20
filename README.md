@@ -14,16 +14,6 @@
 A secure <b>Node.js + Express + MongoDB</b> REST API for managing school attendance, with JWT authentication, role-based authorization, attendance reports, and CSV export.
 </p>
 
-<p align="center">
-  <b>Branch:</b> <code>devops</code> — adds containerization, CI/CD, environment/config management, and deployment tooling on top of the core application.
-</p>
-
-<p align="center">
-  <a href="https://github.com/sk7652183-rgb/school-attendance-app/actions/workflows/docker-publish.yml">
-    <img src="https://github.com/sk7652183-rgb/school-attendance-app/actions/workflows/docker-publish.yml/badge.svg?branch=DevOps" alt="Build and Push Docker Images" />
-  </a>
-</p>
-
 ---
 
 ## 📑 Table of Contents
