@@ -1,399 +1,398 @@
-# 🚀 School Attendance Application – DevOps
+# 📚 School Attendance API
 
 <p align="center">
+  <img src="https://img.shields.io/badge/Node.js-20.x-green?style=for-the-badge&logo=node.js" />
+  <img src="https://img.shields.io/badge/Express.js-Backend-black?style=for-the-badge&logo=express" />
+  <img src="https://img.shields.io/badge/MongoDB-Database-green?style=for-the-badge&logo=mongodb" />
+  <img src="https://img.shields.io/badge/JWT-Authentication-blue?style=for-the-badge&logo=jsonwebtokens" />
+  <img src="https://img.shields.io/badge/License-MIT-orange?style=for-the-badge" />
+</p>
 
-![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
-![Node.js](https://img.shields.io/badge/Node.js-22-339933?style=for-the-badge&logo=node.js&logoColor=white)
-![MongoDB](https://img.shields.io/badge/MongoDB-7-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
-![Nginx](https://img.shields.io/badge/Nginx-Alpine-009639?style=for-the-badge&logo=nginx&logoColor=white)
-
+<p align="center">
+A secure <b>Node.js + Express + MongoDB</b> REST API for managing school attendance with JWT authentication, role-based authorization, attendance reports, and CSV export.
 </p>
 
 ---
 
-# 📚 Table of Contents
+# ✨ Features
 
-- Overview
-- Architecture
-- Backend Docker Image
-- Optimized Multi-Stage Build
-- Docker Best Practices
-- .dockerignore
-- Frontend Docker Image
-- Docker Compose
-- Running the Project
-- Default Credentials
-- Create Additional Users
-- Verify Users in MongoDB
-- Docker Images
-- Docker Hub
-- Demo
-- Final Result
+- 🔐 JWT Authentication
+- 👥 Role-Based Access Control (Admin & Teacher)
+- 🏫 Class Management
+- 🎓 Student Management
+- ✅ Daily Attendance Tracking
+- 📅 Monthly Attendance Reports
+- 📊 Daily Attendance Summary
+- 📄 CSV Report Export
+- 🔒 Password Hashing using bcrypt
+- ⚡ RESTful API Design
+- 🗄 MongoDB + Mongoose
 
 ---
 
-# 📌 Overview
+# 📑 Table of Contents
 
-This project demonstrates containerizing a **Full Stack School Attendance Application** using Docker.
-
-The application consists of:
-
-- 🌐 HTML/CSS/JavaScript Frontend
-- ⚙️ Node.js + Express REST API
-- 🍃 MongoDB Database
-- 🌍 Nginx Reverse Proxy
-- 🐳 Docker & Docker Compose
-
----
-
-# 🏗️ Architecture
-
-```
-                    Browser
-                        │
-                        ▼
-                Nginx (Frontend)
-                        │
-         ┌──────────────┴──────────────┐
-         ▼                             ▼
- Static HTML/CSS/JS             /api Requests
-                                        │
-                                        ▼
-                            Node.js + Express API
-                                        │
-                                        ▼
-                                   MongoDB
-```
+- [Tech Stack](#-tech-stack)
+- [Installation](#-installation)
+- [Environment Variables](#-environment-variables)
+- [Running the Project](#-running-the-project)
+- [Authentication](#-authentication)
+- [User Roles](#-user-roles)
+- [API Endpoints](#-api-endpoints)
+- [Attendance Example](#-attendance-example)
+- [Project Structure](#-project-structure)
+- [Screenshots](#-screenshots)
+- [Demo Video](#-demo-video)
+- [Notes](#-notes)
 
 ---
 
-# 🖥️ Backend Docker Image
+# 🚀 Tech Stack
 
-## Basic Dockerfile
+| Technology | Purpose |
+|------------|---------|
+| Node.js | Runtime |
+| Express.js | Backend Framework |
+| MongoDB | Database |
+| Mongoose | ODM |
+| JWT | Authentication |
+| bcrypt | Password Encryption |
+| json2csv | CSV Export |
 
-```dockerfile
-FROM node:22-alpine
+---
 
-WORKDIR /app
+# ⚙ Installation
 
-COPY package*.json ./
-
-RUN npm install
-
-COPY . .
-
-EXPOSE 5000
-
-CMD ["npm","start"]
-```
-
-Build
+Clone the repository
 
 ```bash
-docker build -t school-attendance-app:v1 .
+git clone https://github.com/yourusername/school-attendance-app.git
+
+cd school-attendance-app
 ```
 
-Image Size
-
-| Version | Size |
-|----------|------|
-| Initial | 300 MB |
-
----
-
-# 🚀 Optimized Multi-Stage Docker Build
-
-```dockerfile
-# Stage 1
-FROM node:22-alpine AS deps
-
-WORKDIR /app
-
-COPY package*.json ./
-
-RUN npm ci --omit=dev
-
-# Stage 2
-
-FROM node:22-alpine
-
-WORKDIR /app
-
-COPY --from=deps /app/node_modules ./node_modules
-
-COPY . .
-
-USER node
-
-EXPOSE 5000
-
-CMD ["node","server.js"]
-```
-
-Build
+Install dependencies
 
 ```bash
-docker build --no-cache -t school-attendance-app .
+npm install
 ```
 
----
-
-## 📊 Image Comparison
-
-| Version | Size |
-|----------|------|
-| Initial | 300 MB |
-| Optimized | 280 MB |
-
-✅ Reduced image size by **20 MB**
-
----
-
-# 🛡️ Docker Best Practices
-
-| Practice | Status |
-|----------|:------:|
-| Multi-stage Build | ✅ |
-| Non-root User | ✅ |
-| Alpine Image | ✅ |
-| Docker Cache | ✅ |
-| Optimized Layers | ✅ |
-| Smaller Image | ✅ |
-| Production Dependencies | ✅ |
-
----
-
-# 📁 .dockerignore
-
-```gitignore
-node_modules
-.git
-.gitignore
-README.md
-.env
-npm-debug.log
-*.log
-```
-
-Benefits
-
-- Faster Docker Builds
-- Smaller Build Context
-- Better Cache Usage
-- Keeps Secrets Out of Images
-
----
-
-# 🌐 Frontend Docker Image
-
-```dockerfile
-FROM nginx:1.25-alpine
-
-COPY . /usr/share/nginx/html
-
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-EXPOSE 80
-
-CMD ["nginx","-g","daemon off;"]
-```
-
-Build
+Copy environment variables
 
 ```bash
-cd frontend
-
-docker build -t school-attendance-app-frontend .
+cp .env.example .env
 ```
 
----
+Edit your `.env`
 
-# 📦 Docker Compose
+```env
+PORT=5000
 
-Services
+MONGO_URI=your_mongodb_connection
 
-- Frontend
-- Backend
-- MongoDB
-- Persistent Volume
-- Docker Network
-
-Start
-
-```bash
-docker compose up -d --build
-```
-
-Stop
-
-```bash
-docker compose down
-```
-
-View Logs
-
-```bash
-docker compose logs -f
+JWT_SECRET=your_super_secret_key
 ```
 
 ---
 
 # ▶ Running the Project
 
-Application
+### Seed the Admin User
+
+```bash
+node seedAdmin.js
+```
+
+Default Login
 
 ```
-http://<EC2-PUBLIC-IP>
+Email:
+admin@school.com
+
+Password:
+ChangeMe123!
 ```
 
-Backend API
+> ⚠ Change the password immediately after first login.
 
+Start Development Server
+
+```bash
+npm run dev
 ```
-http://<EC2-PUBLIC-IP>/api
+
+Production
+
+```bash
+npm start
 ```
 
 ---
 
-# 🔑 Default Credentials
+# 🔐 Authentication
 
-The backend automatically creates an Admin user.
+All endpoints require JWT except:
 
-| Role | Email | Password |
-|------|-------|----------|
-| Admin | admin@school.com | ChangeMe123! |
-
----
-
-# 👥 Create Additional Users
-
-Create Teacher One
-
-```bash
-docker exec -it school-attendance-backend node createUser.js "Teacher One" teacher1@school.com Password123!
+```
+POST /api/auth/login
 ```
 
-Create Teacher Two
+Include the token:
 
-```bash
-docker exec -it school-attendance-backend node createUser.js "Teacher Two" teacher2@school.com Password123!
-```
-
-General Command
-
-```bash
-docker exec -it school-attendance-backend node createUser.js "<Name>" <Email> <Password>
+```http
+Authorization: Bearer YOUR_JWT_TOKEN
 ```
 
 ---
 
-# 🔍 Verify Users in MongoDB
+# 👥 User Roles
+
+## 👑 Admin
+
+✔ Manage Users
+
+✔ Manage Classes
+
+✔ Manage Students
+
+✔ Attendance CRUD
+
+✔ Reports
+
+✔ CSV Export
+
+---
+
+## 👨‍🏫 Teacher
+
+✔ View Classes
+
+✔ View Students
+
+✔ Mark Attendance
+
+✔ Update Attendance
+
+✔ View Reports
+
+❌ Cannot Create/Delete Users
+
+❌ Cannot Create/Delete Classes
+
+❌ Cannot Delete Attendance
+
+---
+
+# 📡 API Endpoints
+
+## Authentication
+
+| Method | Endpoint | Access |
+|---------|----------|--------|
+| POST | `/api/auth/register` | Admin |
+| POST | `/api/auth/login` | Public |
+| GET | `/api/auth/me` | Authenticated |
+
+---
 
 Connect
 
-```bash
-docker exec -it attendance-mongodb mongosh
-```
+| Method | Endpoint | Access |
+|---------|----------|--------|
+| GET | `/api/classes` | All |
+| GET | `/api/classes/:id` | All |
+| POST | `/api/classes` | Admin |
+| PUT | `/api/classes/:id` | Admin |
+| DELETE | `/api/classes/:id` | Admin |
+
+---
 
 Use Database
 
-```javascript
-use school_attendance
-```
+| Method | Endpoint | Access |
+|---------|----------|--------|
+| GET | `/api/students` | All |
+| GET | `/api/students/:id` | All |
+| POST | `/api/students` | Admin |
+| PUT | `/api/students/:id` | Admin |
+| DELETE | `/api/students/:id` | Admin |
+
+---
 
 View Users
 
-```javascript
-db.users.find({},{
-password:0
-}).pretty()
+| Method | Endpoint | Access |
+|---------|----------|--------|
+| POST | `/api/attendance` | Admin, Teacher |
+| GET | `/api/attendance` | All |
+| PUT | `/api/attendance/:id` | Admin, Teacher |
+| DELETE | `/api/attendance/:id` | Admin |
+
+---
+
+## Reports
+
+| Method | Endpoint | Description |
+|---------|----------|-------------|
+| GET | `/api/reports/daily` | Daily Summary |
+| GET | `/api/reports/monthly` | Monthly Report |
+| GET | `/api/reports/export` | Export CSV |
+
+---
+
+# ✅ Attendance Example
+
+```http
+POST /api/attendance
 ```
 
-View Students
-
-```javascript
-db.students.find().pretty()
+```json
+{
+  "classId": "664f...",
+  "date": "2026-08-02",
+  "records": [
+    {
+      "studentId": "664a...",
+      "status": "present"
+    },
+    {
+      "studentId": "664b...",
+      "status": "absent"
+    },
+    {
+      "studentId": "664c...",
+      "status": "late"
+    }
+  ]
+}
 ```
 
-View Classes
+---
 
-```javascript
-db.classes.find().pretty()
-```
-
-View Attendance
+# 📁 Project Structure
 
 ```javascript
 db.attendances.find().pretty()
 ```
-
----
-
-# 🐳 Docker Images
-
-| Image | Purpose |
-|------|----------|
-| school-attendance-app | Backend |
-| school-attendance-app:v1 | Initial Backend |
-| school-attendance-app-frontend | Frontend |
-
----
-
-# ☁ Docker Hub
-
-Backend
-
-https://hub.docker.com/r/sufiyn/school-attendance-app-backend
-
-Frontend
-
-https://hub.docker.com/r/sufiyn/school-attendance-app-frontend
-
-Pull Images
-
-```bash
-docker pull sufiyn/school-attendance-app-backend:latest
-
-docker pull sufiyn/school-attendance-app-frontend:latest
+school-attendance-app
+│
+├── config/
+│   └── db.js
+│
+├── controllers/
+│   ├── authController.js
+│   ├── classController.js
+│   ├── studentController.js
+│   ├── attendanceController.js
+│   └── reportController.js
+│
+├── middleware/
+│   ├── auth.js
+│   └── role.js
+│
+├── models/
+│   ├── User.js
+│   ├── Class.js
+│   ├── Student.js
+│   └── Attendance.js
+│
+├── routes/
+│
+├── server.js
+├── seedAdmin.js
+├── .env.example
+└── package.json
 ```
 
 ---
 
-# 🎥 Demo
+# 📸 Screenshots
 
-🎬 Watch the project demo below.
+## 🔑 Login
 
-https://github.com/user-attachments/assets/3e452e8a-b382-418f-a02b-8e36024da481
-
----
-
-# 🎯 Final Result
-
-✅ Backend Containerized
-
-✅ Frontend Containerized
-
-✅ MongoDB Containerized
-
-✅ Docker Compose Configured
-
-✅ Multi-stage Docker Build
-
-✅ Optimized Image Size
-
-✅ Non-root User
-
-✅ Nginx Reverse Proxy
-
-✅ Persistent MongoDB Volume
-
-✅ Docker Hub Images Published
-
-✅ Production Ready Deployment
+<p align="center">
+<img src="https://github.com/user-attachments/assets/6d7ea361-a6e7-4812-b1a5-6489cde1fd24" width="900"/>
+</p>
 
 ---
 
-## ⭐ Support
+## 📋 Attendance Dashboard
 
-If you found this project useful, please consider giving it a **⭐ Star** on GitHub.
+<p align="center">
+<img src="https://github.com/user-attachments/assets/cf4f125e-36bb-4242-8e19-1306a0d6bbb2" width="900"/>
+</p>
 
-Happy Learning! 🚀
+---
+
+## 📊 Reports
+
+<p align="center">
+<img src="https://github.com/user-attachments/assets/611b8423-771b-43db-8456-884f6e996c9c" width="900"/>
+</p>
+
+---
+
+# 🎥 Demo Video
+
+Click the image below to watch the demo.
+
+[![Watch Demo](https://img.shields.io/badge/▶-Watch%20Demo-red?style=for-the-badge)](https://github.com/user-attachments/assets/3e452e8a-b382-418f-a02b-8e36024da481)
+
+---
+
+# 🔒 Security
+
+- Passwords are hashed using **bcrypt**
+- JWT Authentication
+- Role-Based Authorization
+- Protected Routes
+- Environment Variables for Secrets
+
+---
+
+# 📝 Notes
+
+- Attendance is unique per **Student + Class + Date**
+- Duplicate attendance automatically updates the existing record.
+- Always store a strong JWT secret in production.
+- Never commit your `.env` file.
+
+---
+
+# 🤝 Contributing
+
+Contributions are welcome!
+
+1. Fork the repository
+
+2. Create your feature branch
+
+```bash
+git checkout -b feature/new-feature
+```
+
+3. Commit changes
+
+```bash
+git commit -m "Added new feature"
+```
+
+4. Push
+
+```bash
+git push origin feature/new-feature
+```
+
+5. Open a Pull Request
+
+---
+
+# ⭐ Support
+
+If you found this project helpful, consider giving it a ⭐ on GitHub.
+
+---
+
+<p align="center">
+Made with ❤️ using Node.js, Express & MongoDB
+</p>
