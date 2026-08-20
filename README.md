@@ -1,4 +1,4 @@
-# 📚 School Attendance API — DevOps Branch
+# 📚 School Attendance API
 
 <p align="center">
   <img src="https://img.shields.io/badge/Node.js-20.x-green?style=for-the-badge&logo=node.js" />
@@ -11,11 +11,17 @@
 </p>
 
 <p align="center">
-A secure <b>Node.js + Express + MongoDB</b> REST API for managing school attendance with JWT authentication, role-based authorization, attendance reports, and CSV export.
+A secure <b>Node.js + Express + MongoDB</b> REST API for managing school attendance, with JWT authentication, role-based authorization, attendance reports, and CSV export.
 </p>
 
 <p align="center">
-<b>Branch:</b> <code>devops</code> — this branch adds containerization, CI/CD, environment/config management, and deployment tooling on top of the main application.
+  <b>Branch:</b> <code>devops</code> — adds containerization, CI/CD, environment/config management, and deployment tooling on top of the core application.
+</p>
+
+<p align="center">
+  <a href="https://github.com/sk7652183-rgb/school-attendance-app/actions/workflows/docker-publish.yml">
+    <img src="https://github.com/sk7652183-rgb/school-attendance-app/actions/workflows/docker-publish.yml/badge.svg?branch=DevOps" alt="Build and Push Docker Images" />
+  </a>
 </p>
 
 ---
@@ -25,7 +31,7 @@ A secure <b>Node.js + Express + MongoDB</b> REST API for managing school attenda
 - [Features](#-features)
 - [Tech Stack](#-tech-stack)
 - [DevOps Additions in This Branch](#-devops-additions-in-this-branch)
-- [Installation (Local Dev)](#-installation-local-dev)
+- [Quick Start](#-quick-start)
 - [Environment Variables](#-environment-variables)
 - [Running the Project](#-running-the-project)
 - [Running with Docker](#-running-with-docker)
@@ -81,7 +87,7 @@ A secure <b>Node.js + Express + MongoDB</b> REST API for managing school attenda
 
 ## 🛠 DevOps Additions in This Branch
 
-This branch is intended to make the API deployable in a repeatable, automated way. It layers the following on top of the application code:
+This branch makes the API deployable in a repeatable, automated way. It layers the following on top of the application code:
 
 | Area | What's Added |
 |------|--------------|
@@ -93,33 +99,35 @@ This branch is intended to make the API deployable in a repeatable, automated wa
 | Logging | Structured request logging (e.g., via `morgan`/`winston`) |
 | Process Management | PM2 config for production process supervision |
 
-> ⚠ If any of the above files (`Dockerfile`, `docker-compose.yml`, `.github/workflows/*`) don't exist yet in this branch, add them alongside this README so the sections below match the actual repo contents.
+> ⚠️ If any of the above files (`Dockerfile`, `docker-compose.yml`, `.github/workflows/*`) don't exist yet in this branch, add them alongside this README so the sections below match the actual repo contents.
 
 ---
 
-## ⚙ Installation (Local Dev)
+## ⚡ Quick Start
 
-Clone the repository
+Follow these steps in order — this is all you need to get the API running locally.
+
+**1. Clone the repository and switch to the `devops` branch**
 
 ```bash
-git clone https://github.com/yourusername/school-attendance-app.git
+git clone https://github.com/sk7652183-rgb/school-attendance-app.git
 cd school-attendance-app
 git checkout devops
 ```
 
-Install dependencies
+**2. Install dependencies**
 
 ```bash
 npm install
 ```
 
-Copy environment variables
+**3. Create your environment file**
 
 ```bash
 cp .env.example .env
 ```
 
-Edit your `.env`
+**4. Fill in `.env` with your own values**
 
 ```env
 PORT=5000
@@ -127,6 +135,47 @@ MONGO_URI=your_mongodb_connection
 JWT_SECRET=your_super_secret_key
 NODE_ENV=development
 ```
+
+> Need a MongoDB connection string quickly? Create a free cluster at [MongoDB Atlas](https://www.mongodb.com/atlas) and copy the connection URI it gives you, or point `MONGO_URI` at a local instance (`mongodb://localhost:27017/school-attendance`).
+
+**5. Seed the default admin user**
+
+```bash
+node seedAdmin.js
+```
+
+This creates a login you can use immediately:
+
+```
+Email: admin@school.com
+Password: ChangeMe123!
+```
+
+> ⚠️ Change this password immediately after your first login — never leave the default credentials active anywhere but a local machine.
+
+**6. Start the development server**
+
+```bash
+npm run dev
+```
+
+The API should now be running at `http://localhost:5000` (or whatever `PORT` you set). Confirm it's alive:
+
+```bash
+curl http://localhost:5000/api/health
+```
+
+**7. Log in and get a token**
+
+```bash
+curl -X POST http://localhost:5000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"admin@school.com","password":"ChangeMe123!"}'
+```
+
+Use the returned JWT as a `Bearer` token on all subsequent requests (see [Authentication](#-authentication)).
+
+That's it — you have a working local instance. The sections below cover Docker, CI/CD, deployment, and the full API reference.
 
 ---
 
@@ -145,56 +194,47 @@ NODE_ENV=development
 
 ## ▶ Running the Project
 
-### Seed the Admin User
-
-```bash
-node seedAdmin.js
-```
-
-Default Login
-
-```
-Email: admin@school.com
-Password: ChangeMe123!
-```
-
-> ⚠ Change the password immediately after first login.
-
-Start Development Server
+### Development
 
 ```bash
 npm run dev
 ```
 
-Production
+Runs the server with hot-reload (e.g. via `nodemon`) — best for local development.
+
+### Production
 
 ```bash
 npm start
 ```
 
+Runs the server as it would run in production. Pair this with PM2 if you're running it directly on a host rather than in a container (see [Deployment](#-deployment)).
+
 ---
 
 ## 🐳 Running with Docker
 
-Build and run the API + MongoDB together:
+The fastest way to run the full stack (API + MongoDB) without installing MongoDB locally.
+
+**1. Build and start both containers**
 
 ```bash
 docker compose up --build
 ```
 
-Run in detached mode:
+**2. Or run it in the background**
 
 ```bash
 docker compose up -d
 ```
 
-Stop containers:
+**3. Stop everything**
 
 ```bash
 docker compose down
 ```
 
-**Example `docker-compose.yml` (adjust to match repo):**
+**`docker-compose.yml`** (adjust to match your repo if it differs):
 
 ```yaml
 version: "3.8"
@@ -217,7 +257,7 @@ volumes:
   mongo-data:
 ```
 
-**Example `Dockerfile`:**
+**`Dockerfile`:**
 
 ```dockerfile
 FROM node:20-alpine
@@ -233,19 +273,18 @@ CMD ["node", "server.js"]
 
 ## 🔄 CI/CD Pipeline
 
-This branch assumes a GitHub Actions workflow at `.github/workflows/ci.yml` that runs on every push and pull request:
+A GitHub Actions workflow at `.github/workflows/ci.yml` (or `docker-publish.yml`) runs automatically on every push and pull request:
 
 1. **Install** dependencies
 2. **Lint** the codebase
 3. **Test** (unit/integration, if present)
 4. **Build** the Docker image
-5. **Push** the image to a container registry (on merge to `main`)
-6. **Deploy** (optional, e.g. to a VM, ECS, or Render/Railway/Fly.io)
+5. **Push** the image to a container registry (on push to `DevOps`/`main`)
+6. **Deploy** (optional — e.g. to a VM, ECS, or Render/Railway/Fly.io)
 
-**Example workflow skeleton:**
+**Current workflow:**
 
 ```yaml
-
 name: Build and Push Docker Images
 
 on:
@@ -269,12 +308,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: 'npm' 
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
-      
- 
+
       - name: Login Docker Hub
         uses: docker/login-action@v3
         with:
@@ -283,8 +321,8 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-        
-      - name:  Get short commit SHA
+
+      - name: Get short commit SHA
         id: short_sha
         run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
 
@@ -294,11 +332,16 @@ jobs:
           context: ${{ matrix.services == 'frontend' && './frontend' || '.' }}
           push: ${{ github.ref == 'refs/heads/DevOps' && github.event_name == 'push' }}
           tags: |
-                ${{ vars.DOCKERHUB_USERNAME }}/school-attendance-app-${{ matrix.services }}:latest
-                ${{ vars.DOCKERHUB_USERNAME }}/school-attendance-app-${{ matrix.services }}:sha-${{ steps.short_sha.outputs.sha }}
-
-
+            ${{ vars.DOCKERHUB_USERNAME }}/school-attendance-app-${{ matrix.services }}:latest
+            ${{ vars.DOCKERHUB_USERNAME }}/school-attendance-app-${{ matrix.services }}:sha-${{ steps.short_sha.outputs.sha }}
 ```
+
+**Required repository secrets/variables:**
+
+| Name | Type | Purpose |
+|------|------|---------|
+| `DOCKERHUB_USERNAME` | Variable | Your Docker Hub username, used to tag and push images |
+| `DOCKERHUB_TOKEN` | Secret | Docker Hub access token (not your password) |
 
 ---
 
@@ -307,11 +350,11 @@ jobs:
 General flow for shipping this API to an environment:
 
 1. Set environment variables (`PORT`, `MONGO_URI`, `JWT_SECRET`, `NODE_ENV=production`) via your host's secret manager.
-2. Build and push the Docker image to your registry (Docker Hub, GHCR, ECR, etc.).
-3. Pull and run the image on the target host/cluster.
-4. Point your MongoDB instance to a managed service (e.g., MongoDB Atlas) for production.
+2. Build and push the Docker image to your registry (Docker Hub, GHCR, ECR, etc.) — handled automatically by CI on merge to `main`/`DevOps`.
+3. Pull and run the image on the target host or cluster.
+4. Point `MONGO_URI` at a managed MongoDB instance (e.g., MongoDB Atlas) for production — don't use the local `mongo` container from `docker-compose.yml` in production.
 5. Put the API behind a reverse proxy (e.g., Nginx) or load balancer with HTTPS termination.
-6. Verify with the `/api/health` endpoint before routing production traffic.
+6. Verify with the `/api/health` endpoint before routing production traffic to the new instance.
 
 ---
 
@@ -330,13 +373,13 @@ Suggested additions for production observability:
 
 ## 🔐 Authentication
 
-All endpoints require JWT except:
+All endpoints require a JWT **except**:
 
 ```
 POST /api/auth/login
 ```
 
-Include the token:
+Include the token on every other request:
 
 ```http
 Authorization: Bearer YOUR_JWT_TOKEN
@@ -509,17 +552,12 @@ school-attendance-app
 
 ## 📝 Notes
 
-- Attendance is unique per **Student + Class + Date**
-- Duplicate attendance automatically updates the existing record
-- Always store a strong JWT secret in production
-- Never commit your `.env` file
-- Keep this `devops` branch in sync with `main` for application logic changes; this branch should only diverge on infra/config/pipeline files
+- Attendance is unique per **Student + Class + Date** — a duplicate submission automatically updates the existing record rather than creating a new one.
+- Always store a strong, random `JWT_SECRET` in production.
+- Never commit your `.env` file.
+- Keep this `devops` branch in sync with `main` for application logic changes; it should only diverge on infra/config/pipeline files.
 
 ---
-
-# 📚 School Attendance API
-
-[![Build and Push Docker Images](https://github.com/sk7652183-rgb/school-attendance-app/actions/workflows/docker-publish.yml/badge.svg?branch=DevOps)](https://github.com/sk7652183-rgb/school-attendance-app/actions/workflows/docker-publish.yml)
 
 ## 🤝 Contributing
 
@@ -528,11 +566,11 @@ school-attendance-app
    ```bash
    git checkout -b feature/new-feature
    ```
-3. Commit changes
+3. Commit your changes
    ```bash
    git commit -m "Added new feature"
    ```
-4. Push
+4. Push the branch
    ```bash
    git push origin feature/new-feature
    ```
