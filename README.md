@@ -1,252 +1,266 @@
 # 📚 School Attendance API
 
+```{=html}
 <p align="center">
-  <img src="https://img.shields.io/badge/Node.js-20.x-green?style=for-the-badge&logo=node.js" />
-  <img src="https://img.shields.io/badge/Express.js-Backend-black?style=for-the-badge&logo=express" />
-  <img src="https://img.shields.io/badge/MongoDB-Database-green?style=for-the-badge&logo=mongodb" />
-  <img src="https://img.shields.io/badge/JWT-Authentication-blue?style=for-the-badge&logo=jsonwebtokens" />
-  <img src="https://img.shields.io/badge/License-MIT-orange?style=for-the-badge" />
+```
+`<img src="https://img.shields.io/badge/Node.js-20.x-green?style=for-the-badge&logo=node.js" />`{=html}
+`<img src="https://img.shields.io/badge/Express.js-Backend-black?style=for-the-badge&logo=express" />`{=html}
+`<img src="https://img.shields.io/badge/MongoDB-Database-green?style=for-the-badge&logo=mongodb" />`{=html}
+`<img src="https://img.shields.io/badge/JWT-Authentication-blue?style=for-the-badge&logo=jsonwebtokens" />`{=html}
+`<img src="https://img.shields.io/badge/Docker-Containerization-blue?style=for-the-badge&logo=docker" />`{=html}
+`<img src="https://img.shields.io/badge/AWS%20EC2-Deployment-orange?style=for-the-badge&logo=amazonaws" />`{=html}
+`<img src="https://img.shields.io/badge/License-MIT-orange?style=for-the-badge" />`{=html}
+```{=html}
 </p>
-
+```
+```{=html}
 <p align="center">
-A secure <b>Node.js + Express + MongoDB</b> REST API for managing school attendance with JWT authentication, role-based authorization, attendance reports, and CSV export.
+```
+A secure `<strong>`{=html}Node.js + Express + MongoDB`</strong>`{=html}
+REST API for managing school attendance with JWT authentication,
+role-based authorization, attendance reports, CSV export, Docker
+containerization, and CI/CD using GitHub Actions.
+```{=html}
 </p>
+```
 
----
+------------------------------------------------------------------------
 
-# ✨ Features
+## ✨ Features
 
-- 🔐 JWT Authentication
-- 👥 Role-Based Access Control (Admin & Teacher)
-- 🏫 Class Management
-- 🎓 Student Management
-- ✅ Daily Attendance Tracking
-- 📅 Monthly Attendance Reports
-- 📊 Daily Attendance Summary
-- 📄 CSV Report Export
-- 🔒 Password Hashing using bcrypt
-- ⚡ RESTful API Design
-- 🗄 MongoDB + Mongoose
+-   🔐 JWT-based authentication
+-   👥 Role-based access control (Admin & Teacher)
+-   🏫 Class management
+-   🎓 Student management
+-   ✅ Daily attendance tracking
+-   📅 Monthly attendance reports
+-   📊 Daily attendance summaries
+-   📄 CSV report export
+-   🔒 Password hashing with bcrypt
+-   ⚡ RESTful API architecture
+-   🗄 MongoDB with Mongoose
+-   🐳 Docker containerization
+-   📦 Docker Hub image publishing
+-   🔄 GitHub Actions CI/CD
+-   ☁️ AWS EC2 deployment
+-   🌐 Nginx frontend/reverse proxy
 
----
+------------------------------------------------------------------------
 
-# 📑 Table of Contents
+## 📑 Table of Contents
 
-- [Tech Stack](#-tech-stack)
-- [Installation](#-installation)
-- [Environment Variables](#-environment-variables)
-- [Running the Project](#-running-the-project)
-- [Authentication](#-authentication)
-- [User Roles](#-user-roles)
-- [API Endpoints](#-api-endpoints)
-- [Attendance Example](#-attendance-example)
-- [Project Structure](#-project-structure)
-- [Screenshots](#-screenshots)
-- [Demo Video](#-demo-video)
-- [Notes](#-notes)
+-   [Tech Stack](#-tech-stack)
+-   [Installation](#-installation)
+-   [Environment Variables](#-environment-variables)
+-   [Running the Project](#-running-the-project)
+-   [Authentication](#-authentication)
+-   [User Roles](#-user-roles)
+-   [API Endpoints](#-api-endpoints)
+-   [Attendance Example](#-attendance-example)
+-   [Project Structure](#-project-structure)
+-   [Docker Deployment](#-docker-deployment)
+-   [EC2 Security Group
+    Configuration](#-ec2-security-group-configuration)
+-   [GitHub Actions CI/CD](#-github-actions-cicd)
+-   [Docker Troubleshooting](#-docker-troubleshooting)
+-   [Deployment Architecture](#-deployment-architecture)
+-   [Screenshots](#-screenshots)
+-   [Demo Video](#-demo-video)
+-   [Security](#-security)
+-   [Notes](#-notes)
+-   [Contributing](#-contributing)
+-   [Support](#-support)
 
----
+------------------------------------------------------------------------
 
-# 🚀 Tech Stack
+## 🚀 Tech Stack
 
-| Technology | Purpose |
-|------------|---------|
-| Node.js | Runtime |
-| Express.js | Backend Framework |
-| MongoDB | Database |
-| Mongoose | ODM |
-| JWT | Authentication |
-| bcrypt | Password Encryption |
-| json2csv | CSV Export |
+  Technology       Purpose
+  ---------------- -------------------------------------
+  Node.js          Runtime environment
+  Express.js       Backend framework
+  MongoDB          Database
+  Mongoose         MongoDB ODM
+  JWT              Authentication
+  bcrypt           Password hashing
+  json2csv         CSV report generation
+  Docker           Containerization
+  Docker Hub       Container image registry
+  GitHub Actions   CI/CD
+  AWS EC2          Cloud deployment
+  Nginx            Frontend web server / reverse proxy
 
----
+------------------------------------------------------------------------
 
-# ⚙ Installation
+## ⚙️ Installation
 
-Clone the repository
+### 1. Clone the repository
 
-```bash
-git clone https://github.com/yourusername/school-attendance-app.git
-
+``` bash
+git clone https://github.com/sk7652183-rgb/school-attendance-app.git
 cd school-attendance-app
 ```
 
-Install dependencies
+### 2. Install dependencies
 
-```bash
+``` bash
 npm install
 ```
 
-Copy environment variables
+### 3. Configure environment variables
 
-```bash
+Copy the example environment file:
+
+``` bash
 cp .env.example .env
 ```
 
-Edit your `.env`
+Update `.env`:
 
-```env
+``` env
 PORT=5000
-
 MONGO_URI=your_mongodb_connection
-
 JWT_SECRET=your_super_secret_key
+FRONTEND_URL=http://localhost:5173
 ```
 
----
+> ⚠️ Never commit your `.env` file to GitHub.
 
-# ▶ Running the Project
+------------------------------------------------------------------------
+
+## ▶️ Running the Project
 
 ### Seed the Admin User
 
-```bash
+``` bash
 node seedAdmin.js
 ```
 
-Default Login
+Default credentials:
 
-```
-Email:
-admin@school.com
-
-Password:
-ChangeMe123!
+``` text
+Email: admin@school.com
+Password: ChangeMe123!
 ```
 
-> ⚠ Change the password immediately after first login.
+> ⚠️ Change the default password immediately after the first login.
 
-Start Development Server
+### Development
 
-```bash
+``` bash
 npm run dev
 ```
 
-Production
+### Production
 
-```bash
+``` bash
 npm start
 ```
 
----
+------------------------------------------------------------------------
 
-# 🔐 Authentication
+## 🔐 Authentication
 
-All endpoints require JWT except:
+All protected endpoints require a valid JWT token.
 
-```
+Public endpoint:
+
+``` http
 POST /api/auth/login
 ```
 
-Include the token:
+Include the JWT token in the request header:
 
-```http
+``` http
 Authorization: Bearer YOUR_JWT_TOKEN
 ```
 
----
+------------------------------------------------------------------------
 
-# 👥 User Roles
+## 👥 User Roles
 
-## 👑 Admin
+### 👑 Admin
 
-✔ Manage Users
+-   ✅ Manage users
+-   ✅ Manage classes
+-   ✅ Manage students
+-   ✅ Create, update, and delete attendance
+-   ✅ View reports
+-   ✅ Export CSV reports
 
-✔ Manage Classes
+### 👨‍🏫 Teacher
 
-✔ Manage Students
+-   ✅ View classes
+-   ✅ View students
+-   ✅ Mark attendance
+-   ✅ Update attendance
+-   ✅ View reports
+-   ❌ Cannot create or delete users
+-   ❌ Cannot create or delete classes
+-   ❌ Cannot delete attendance
 
-✔ Attendance CRUD
+------------------------------------------------------------------------
 
-✔ Reports
+## 📡 API Endpoints
 
-✔ CSV Export
+### Authentication
 
----
+  Method   Endpoint               Access
+  -------- ---------------------- ---------------
+  `POST`   `/api/auth/register`   Admin
+  `POST`   `/api/auth/login`      Public
+  `GET`    `/api/auth/me`         Authenticated
 
-## 👨‍🏫 Teacher
+### Classes
 
-✔ View Classes
+  Method     Endpoint             Access
+  ---------- -------------------- --------
+  `GET`      `/api/classes`       All
+  `GET`      `/api/classes/:id`   All
+  `POST`     `/api/classes`       Admin
+  `PUT`      `/api/classes/:id`   Admin
+  `DELETE`   `/api/classes/:id`   Admin
 
-✔ View Students
+### Students
 
-✔ Mark Attendance
+  Method     Endpoint              Access
+  ---------- --------------------- --------
+  `GET`      `/api/students`       All
+  `GET`      `/api/students/:id`   All
+  `POST`     `/api/students`       Admin
+  `PUT`      `/api/students/:id`   Admin
+  `DELETE`   `/api/students/:id`   Admin
 
-✔ Update Attendance
+### Attendance
 
-✔ View Reports
+  Method     Endpoint                Access
+  ---------- ----------------------- ----------------
+  `POST`     `/api/attendance`       Admin, Teacher
+  `GET`      `/api/attendance`       All
+  `PUT`      `/api/attendance/:id`   Admin, Teacher
+  `DELETE`   `/api/attendance/:id`   Admin
 
-❌ Cannot Create/Delete Users
+### Reports
 
-❌ Cannot Create/Delete Classes
+  Method   Endpoint                 Description
+  -------- ------------------------ ---------------------------
+  `GET`    `/api/reports/daily`     Daily attendance summary
+  `GET`    `/api/reports/monthly`   Monthly attendance report
+  `GET`    `/api/reports/export`    Export attendance as CSV
 
-❌ Cannot Delete Attendance
+------------------------------------------------------------------------
 
----
+## ✅ Attendance Example
 
-# 📡 API Endpoints
+### Request
 
-## Authentication
-
-| Method | Endpoint | Access |
-|---------|----------|--------|
-| POST | `/api/auth/register` | Admin |
-| POST | `/api/auth/login` | Public |
-| GET | `/api/auth/me` | Authenticated |
-
----
-
-## Classes
-
-| Method | Endpoint | Access |
-|---------|----------|--------|
-| GET | `/api/classes` | All |
-| GET | `/api/classes/:id` | All |
-| POST | `/api/classes` | Admin |
-| PUT | `/api/classes/:id` | Admin |
-| DELETE | `/api/classes/:id` | Admin |
-
----
-
-## Students
-
-| Method | Endpoint | Access |
-|---------|----------|--------|
-| GET | `/api/students` | All |
-| GET | `/api/students/:id` | All |
-| POST | `/api/students` | Admin |
-| PUT | `/api/students/:id` | Admin |
-| DELETE | `/api/students/:id` | Admin |
-
----
-
-## Attendance
-
-| Method | Endpoint | Access |
-|---------|----------|--------|
-| POST | `/api/attendance` | Admin, Teacher |
-| GET | `/api/attendance` | All |
-| PUT | `/api/attendance/:id` | Admin, Teacher |
-| DELETE | `/api/attendance/:id` | Admin |
-
----
-
-## Reports
-
-| Method | Endpoint | Description |
-|---------|----------|-------------|
-| GET | `/api/reports/daily` | Daily Summary |
-| GET | `/api/reports/monthly` | Monthly Report |
-| GET | `/api/reports/export` | Export CSV |
-
----
-
-# ✅ Attendance Example
-
-```http
+``` http
 POST /api/attendance
 ```
 
-```json
+### Request Body
+
+``` json
 {
   "classId": "664f...",
   "date": "2026-08-02",
@@ -267,12 +281,12 @@ POST /api/attendance
 }
 ```
 
----
+------------------------------------------------------------------------
 
-# 📁 Project Structure
+## 📁 Project Structure
 
-```
-school-attendance-app
+``` text
+school-attendance-app/
 │
 ├── config/
 │   └── db.js
@@ -295,14 +309,27 @@ school-attendance-app
 │   └── Attendance.js
 │
 ├── routes/
+│   ├── authRoutes.js
+│   ├── classRoutes.js
+│   ├── studentRoutes.js
+│   ├── attendanceRoutes.js
+│   └── reportRoutes.js
+│
+├── frontend/
+│
+├── .github/
+│   └── workflows/
+│       └── docker-publish.yml
 │
 ├── server.js
 ├── seedAdmin.js
+├── Dockerfile
+├── docker-compose.yml
 ├── .env.example
-└── package.json
+├── package.json
+└── package-lock.json
 ```
 
----
 
 # 📸 Screenshots
 
