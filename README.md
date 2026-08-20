@@ -245,26 +245,59 @@ This branch assumes a GitHub Actions workflow at `.github/workflows/ci.yml` that
 **Example workflow skeleton:**
 
 ```yaml
-name: CI/CD
+
+name: Build and Push Docker Images
 
 on:
   push:
-    branches: [main, devops]
-  pull_request:
-    branches: [main]
+    branches:
+      - DevOps
 
 jobs:
-  build-and-test:
+  Build-Image:
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        services: [frontend, backend]
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout the code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: 20
-      - run: npm ci
-      - run: npm run lint --if-present
-      - run: npm test --if-present
-      - run: docker build -t school-attendance-api .
+          node-version: '22'
+          cache: 'npm' 
+
+      - name: Install dependencies
+        run: npm ci
+      
+ 
+      - name: Login Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        
+      - name:  Get short commit SHA
+        id: short_sha
+        run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v7
+        with:
+          context: ${{ matrix.services == 'frontend' && './frontend' || '.' }}
+          push: ${{ github.ref == 'refs/heads/DevOps' && github.event_name == 'push' }}
+          tags: |
+                ${{ vars.DOCKERHUB_USERNAME }}/school-attendance-app-${{ matrix.services }}:latest
+                ${{ vars.DOCKERHUB_USERNAME }}/school-attendance-app-${{ matrix.services }}:sha-${{ steps.short_sha.outputs.sha }}
+
+
 ```
 
 ---
