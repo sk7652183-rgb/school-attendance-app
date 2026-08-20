@@ -195,7 +195,7 @@ Authorization: Bearer YOUR_JWT_TOKEN
 
 ---
 
-## Classes
+Connect
 
 | Method | Endpoint | Access |
 |---------|----------|--------|
@@ -207,7 +207,7 @@ Authorization: Bearer YOUR_JWT_TOKEN
 
 ---
 
-## Students
+Use Database
 
 | Method | Endpoint | Access |
 |---------|----------|--------|
@@ -219,7 +219,7 @@ Authorization: Bearer YOUR_JWT_TOKEN
 
 ---
 
-## Attendance
+View Users
 
 | Method | Endpoint | Access |
 |---------|----------|--------|
@@ -271,6 +271,8 @@ POST /api/attendance
 
 # 📁 Project Structure
 
+```javascript
+db.attendances.find().pretty()
 ```
 school-attendance-app
 │

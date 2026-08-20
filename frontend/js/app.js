@@ -1,4 +1,5 @@
-const API_BASE = "http://44.250.251.110:5000/api";
+const API_BASE = "/api";
+
 
 
 const state = {
