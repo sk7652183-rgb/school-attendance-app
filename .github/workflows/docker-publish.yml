@@ -41,4 +41,4 @@ jobs:
         with:
           context: ${{ matrix.services == 'frontend' && './frontend' || '.' }}
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/school-attendance-app-${{ matrix.services }}:latest
+          tags: ${{ vars.DOCKER_USERNAME }}/school-attendance-app-${{ matrix.services }}:latest
